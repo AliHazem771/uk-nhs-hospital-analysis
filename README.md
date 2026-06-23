@@ -1,2 +1,21 @@
-# uk-nhs-hospital-analysis
-SQL analysis of UK hospital distribution across NHS and Independent sectors, exploring geographic concentration and parent organisation dominance.
+# UK NHS Hospital Landscape Analysis
+
+## Business Question
+How is UK hospital provision distributed across NHS and Independent sectors, 
+and which regions and parent organisations dominate the landscape?
+
+## Overview
+SQL analysis of 1,211 registered UK hospitals exploring sector balance, 
+geographic concentration, and parent organisation dominance across the country.
+
+## Tools
+- SQL (SQLite)
+- Python (pandas) for data loading and cleaning
+
+## Dataset
+- Source: Kaggle — UK NHS Hospital Register
+- 1,211 rows, 22 columns
+- Key fields: OrganisationName, Sector, SubType, City, County, ParentName
+
+## Status
+Work in progress — queries being added daily.
