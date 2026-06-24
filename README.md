@@ -13,14 +13,14 @@ geographic concentration, and parent organisation dominance across the country.
 - Python (pandas) for data loading and cleaning
 
 ## Dataset
-- Source: Kaggle — UK NHS Hospital Register
+- Source: Kaggle - UK NHS Hospital Register
 - 1,211 rows, 22 columns
 - Key fields: OrganisationName, Sector, SubType, City, County, ParentName
 
 ## Status
-Work in progress — queries being added daily.
+Work in progress - queries being added daily.
 
-## SQL Queries — Progress
+## SQL Queries - Progress
 
 - [x] Section 1: Data Exploration
 - [ ] Section 2: Geographic Distribution
