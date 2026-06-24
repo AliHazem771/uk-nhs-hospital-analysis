@@ -19,3 +19,12 @@ geographic concentration, and parent organisation dominance across the country.
 
 ## Status
 Work in progress — queries being added daily.
+
+## SQL Queries — Progress
+
+- [x] Section 1: Data Exploration
+- [ ] Section 2: Geographic Distribution
+- [ ] Section 3: Parent Organisation Analysis
+- [ ] Section 4: Sector Comparison
+- [ ] Section 5: Window Functions
+- [ ] Section 6: Summary Findings
