@@ -23,8 +23,15 @@ Work in progress - queries being added daily.
 ## SQL Queries - Progress
 
 - [x] Section 1: Data Exploration
-- [ ] Section 2: Geographic Distribution
+- [x] Section 2: Geographic Distribution
 - [ ] Section 3: Parent Organisation Analysis
 - [ ] Section 4: Sector Comparison
 - [ ] Section 5: Window Functions
 - [ ] Section 6: Summary Findings
+
+## Key Findings So Far
+
+- Kent has the highest concentration of hospitals in the UK with 51 total
+- London leads at city level with 95 hospitals, well ahead of Birmingham (34)
+- Oxfordshire has the highest Independent sector proportion at 73.7% of all 
+  hospitals in the county, suggesting relatively lower NHS provision in the area
