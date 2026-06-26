@@ -85,3 +85,62 @@ GROUP BY County
 HAVING COUNT(*) >= 10
 ORDER BY independent_pct DESC
 LIMIT 10;
+
+-- ============================================================
+-- SECTION 3: PARENT ORGANISATION ANALYSIS
+-- Which organisations control the most hospitals?
+-- ============================================================
+
+-- 3.1 Top 15 parent organisations by hospital count
+SELECT
+    ParentName,
+    Sector,
+    COUNT(*) AS hospitals_managed,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM hospitals), 2) AS pct_of_total
+FROM hospitals
+WHERE ParentName IS NOT NULL AND ParentName != ''
+GROUP BY ParentName, Sector
+ORDER BY hospitals_managed DESC
+LIMIT 15;
+
+-- 3.2 Top NHS parent organisations only
+SELECT
+    ParentName,
+    COUNT(*) AS nhs_hospitals,
+    COUNT(DISTINCT County) AS counties_covered
+FROM hospitals
+WHERE Sector = 'NHS Sector'
+AND ParentName IS NOT NULL AND ParentName != ''
+GROUP BY ParentName
+ORDER BY nhs_hospitals DESC
+LIMIT 10;
+
+-- 3.3 Top Independent sector parent organisations
+SELECT
+    ParentName,
+    COUNT(*) AS independent_hospitals,
+    COUNT(DISTINCT County) AS counties_covered
+FROM hospitals
+WHERE Sector = 'Independent Sector'
+AND ParentName IS NOT NULL AND ParentName != ''
+GROUP BY ParentName
+ORDER BY independent_hospitals DESC
+LIMIT 10;
+
+-- 3.4 Geographic reach of largest parent organisations
+-- Subquery to find parents managing 20 or more hospitals
+SELECT
+    p.ParentName,
+    p.Sector,
+    p.hospitals_managed,
+    COUNT(DISTINCT h.County) AS counties_present,
+    COUNT(DISTINCT h.City) AS cities_present
+FROM (
+    SELECT ParentName, Sector, COUNT(*) AS hospitals_managed
+    FROM hospitals
+    GROUP BY ParentName, Sector
+    HAVING COUNT(*) >= 20
+) p
+JOIN hospitals h ON h.ParentName = p.ParentName
+GROUP BY p.ParentName, p.Sector, p.hospitals_managed
+ORDER BY p.hospitals_managed DESC;
