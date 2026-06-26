@@ -24,7 +24,7 @@ Work in progress - queries being added daily.
 
 - [x] Section 1: Data Exploration
 - [x] Section 2: Geographic Distribution
-- [ ] Section 3: Parent Organisation Analysis
+- [x] Section 3: Parent Organisation Analysis
 - [ ] Section 4: Sector Comparison
 - [ ] Section 5: Window Functions
 - [ ] Section 6: Summary Findings
@@ -35,3 +35,9 @@ Work in progress - queries being added daily.
 - London leads at city level with 95 hospitals, well ahead of Birmingham (34)
 - Oxfordshire has the highest Independent sector proportion at 73.7% of all 
   hospitals in the county, suggesting relatively lower NHS provision in the area
+- BMI Healthcare is the largest Independent sector operator with 43 hospitals, 
+  followed by Spire Healthcare (33) and Nuffield Health (29)
+- The top 4 Independent sector organisations manage 133 hospitals combined, 
+  representing 28.4% of all Independent sector provision
+- NHS parent organisations tend to have more localised footprints compared 
+  to the national reach of large private healthcare groups
