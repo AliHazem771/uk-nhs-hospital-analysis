@@ -144,3 +144,75 @@ FROM (
 JOIN hospitals h ON h.ParentName = p.ParentName
 GROUP BY p.ParentName, p.Sector, p.hospitals_managed
 ORDER BY p.hospitals_managed DESC;
+
+-- ============================================================
+-- SECTION 4: SECTOR COMPARISON ANALYSIS
+-- Deep dive into NHS vs Independent sector differences
+-- using Common Table Expressions (CTEs)
+-- ============================================================
+
+-- 4.1 NHS vs Independent breakdown by SubType
+SELECT
+    Sector,
+    SubType,
+    COUNT(*) AS hospital_count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (PARTITION BY Sector), 1) AS pct_within_sector
+FROM hospitals
+GROUP BY Sector, SubType
+ORDER BY Sector, hospital_count DESC;
+
+-- 4.2 Counties where NHS provision is significantly below average
+-- Step 1: Calculate NHS percentage per county
+-- Step 2: Calculate the national average NHS percentage
+-- Step 3: Compare each county against the average
+WITH county_totals AS (
+    SELECT
+        County,
+        COUNT(*) AS total,
+        SUM(CASE WHEN Sector = 'NHS Sector' THEN 1 ELSE 0 END) AS nhs_count,
+        ROUND(SUM(CASE WHEN Sector = 'NHS Sector' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS nhs_pct
+    FROM hospitals
+    WHERE County IS NOT NULL AND County != ''
+    GROUP BY County
+    HAVING COUNT(*) >= 8
+),
+avg_nhs AS (
+    SELECT ROUND(AVG(nhs_pct), 1) AS avg_nhs_percentage
+    FROM county_totals
+)
+SELECT
+    ct.County,
+    ct.total AS total_hospitals,
+    ct.nhs_count,
+    ct.nhs_pct,
+    a.avg_nhs_percentage,
+    ROUND(ct.nhs_pct - a.avg_nhs_percentage, 1) AS variance_from_average
+FROM county_totals ct, avg_nhs a
+WHERE ct.nhs_pct < a.avg_nhs_percentage
+ORDER BY variance_from_average ASC
+LIMIT 10;
+
+-- 4.3 Sector balance summary per county
+-- Classifying each county by its NHS dominance level
+WITH county_balance AS (
+    SELECT
+        County,
+        COUNT(*) AS total_hospitals,
+        ROUND(SUM(CASE WHEN Sector = 'NHS Sector' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 1) AS nhs_pct
+    FROM hospitals
+    WHERE County IS NOT NULL AND County != ''
+    GROUP BY County
+    HAVING COUNT(*) >= 5
+)
+SELECT
+    CASE
+        WHEN nhs_pct >= 75 THEN 'Predominantly NHS (75%+)'
+        WHEN nhs_pct >= 50 THEN 'NHS Majority (50-74%)'
+        WHEN nhs_pct >= 25 THEN 'Independent Majority (25-49% NHS)'
+        ELSE 'Predominantly Independent (under 25% NHS)'
+    END AS sector_profile,
+    COUNT(*) AS number_of_counties,
+    ROUND(AVG(total_hospitals), 1) AS avg_hospitals_per_county
+FROM county_balance
+GROUP BY sector_profile
+ORDER BY number_of_counties DESC;
