@@ -25,7 +25,7 @@ Work in progress - queries being added daily.
 - [x] Section 1: Data Exploration
 - [x] Section 2: Geographic Distribution
 - [x] Section 3: Parent Organisation Analysis
-- [ ] Section 4: Sector Comparison
+- [x] Section 4: Sector Comparison
 - [ ] Section 5: Window Functions
 - [ ] Section 6: Summary Findings
 
@@ -41,3 +41,10 @@ Work in progress - queries being added daily.
   representing 28.4% of all Independent sector provision
 - NHS parent organisations tend to have more localised footprints compared 
   to the national reach of large private healthcare groups
+- Using CTEs to compare county-level NHS provision against the national 
+  average reveals which regions have significantly below-average NHS coverage
+- Oxfordshire, Hampshire, and Staffordshire show the largest negative 
+  variance from the national NHS average, suggesting heavier reliance 
+  on Independent sector provision in these areas
+- The majority of counties with sufficient data fall into the NHS Majority 
+  category, reflecting the dominance of public healthcare provision nationally
