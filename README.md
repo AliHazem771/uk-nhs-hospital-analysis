@@ -26,7 +26,7 @@ Work in progress - queries being added daily.
 - [x] Section 2: Geographic Distribution
 - [x] Section 3: Parent Organisation Analysis
 - [x] Section 4: Sector Comparison
-- [ ] Section 5: Window Functions
+- [x] Section 5: Window Functions
 - [ ] Section 6: Summary Findings
 
 ## Key Findings So Far
@@ -48,3 +48,10 @@ Work in progress - queries being added daily.
   on Independent sector provision in these areas
 - The majority of counties with sufficient data fall into the NHS Majority 
   category, reflecting the dominance of public healthcare provision nationally
+- The top 5 Independent sector organisations account for over 40% of all 
+  Independent sector hospital provision, showing high market concentration
+- Kent ranks first nationally for total hospital count with 51 hospitals, 
+  significantly above the national county average
+- NHS sector organisations are more evenly distributed in size compared 
+  to the Independent sector where a small number of large private groups 
+  dominate provision
