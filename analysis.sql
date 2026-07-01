@@ -216,3 +216,86 @@ SELECT
 FROM county_balance
 GROUP BY sector_profile
 ORDER BY number_of_counties DESC;
+
+-- ============================================================
+-- SECTION 5: WINDOW FUNCTIONS
+-- Ranking and comparative analysis across sectors and regions
+-- ============================================================
+
+-- 5.1 Rank parent organisations within each sector
+-- Shows relative size of each organisation compared to sector peers
+WITH org_sizes AS (
+    SELECT
+        ParentName,
+        Sector,
+        COUNT(*) AS hospital_count
+    FROM hospitals
+    WHERE ParentName IS NOT NULL AND ParentName != ''
+    GROUP BY ParentName, Sector
+)
+SELECT
+    ParentName,
+    Sector,
+    hospital_count,
+    RANK() OVER (PARTITION BY Sector ORDER BY hospital_count DESC) AS rank_in_sector,
+    ROUND(hospital_count * 100.0 / SUM(hospital_count) OVER (PARTITION BY Sector), 2) AS pct_of_sector
+FROM org_sizes
+ORDER BY Sector, rank_in_sector
+LIMIT 20;
+
+-- 5.2 Running total of hospitals by county alphabetically
+-- Demonstrates cumulative SUM window function
+SELECT
+    County,
+    COUNT(*) AS hospitals_in_county,
+    SUM(COUNT(*)) OVER (
+        ORDER BY County
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM hospitals
+WHERE County IS NOT NULL AND County != ''
+GROUP BY County
+ORDER BY County;
+
+-- 5.3 Compare each county's hospital count against the national average
+-- Using AVG as a window function across the full dataset
+WITH county_counts AS (
+    SELECT
+        County,
+        COUNT(*) AS total_hospitals
+    FROM hospitals
+    WHERE County IS NOT NULL AND County != ''
+    GROUP BY County
+)
+SELECT
+    County,
+    total_hospitals,
+    ROUND(AVG(total_hospitals) OVER (), 1) AS national_avg,
+    total_hospitals - ROUND(AVG(total_hospitals) OVER (), 1) AS variance_from_avg,
+    RANK() OVER (ORDER BY total_hospitals DESC) AS national_rank
+FROM county_counts
+ORDER BY national_rank
+LIMIT 15;
+
+-- 5.4 Cumulative share of Independent sector hospitals by parent organisation
+-- Shows how concentrated Independent sector provision is
+WITH independent_orgs AS (
+    SELECT
+        ParentName,
+        COUNT(*) AS hospital_count
+    FROM hospitals
+    WHERE Sector = 'Independent Sector'
+    AND ParentName IS NOT NULL AND ParentName != ''
+    GROUP BY ParentName
+)
+SELECT
+    ParentName,
+    hospital_count,
+    RANK() OVER (ORDER BY hospital_count DESC) AS org_rank,
+    ROUND(SUM(hospital_count) OVER (
+        ORDER BY hospital_count DESC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) * 100.0 / SUM(hospital_count) OVER (), 1) AS cumulative_pct
+FROM independent_orgs
+ORDER BY org_rank
+LIMIT 15;
